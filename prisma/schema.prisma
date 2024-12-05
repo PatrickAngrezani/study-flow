@@ -1,0 +1,22 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Category {
+  id    String @id @default(uuid())
+  name  String
+  tasks Task[]
+}
+
+model Task {
+  id          String  @id @default(uuid())
+  title       String
+  description String
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+}
