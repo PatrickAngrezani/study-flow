@@ -16,3 +16,29 @@ export async function POST(request: Request) {
   });
   return NextResponse.json(category);
 }
+
+export async function PATCH(request: Request) {
+  try {
+    const body = await request.json();
+
+    if (!body || !body.id || !body.name) {
+      return NextResponse.json(
+        { error: "'id' and 'name' are required in the request body" },
+        { status: 400 }
+      );
+    }
+
+    const updatedCategory = await prisma.category.update({
+      where: { id: body.id },
+      data: { name: body.name },
+    });
+
+    return NextResponse.json(updatedCategory);
+  } catch (error) {
+    console.error("Error updating category:", error);
+    return NextResponse.json(
+      { error: "Failed to update the category" },
+      { status: 500 }
+    );
+  }
+}
