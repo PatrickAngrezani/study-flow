@@ -42,3 +42,31 @@ export async function PATCH(request: Request) {
     );
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const url = new URL(request.url);
+    const id = url.searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Category ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const deletedCategory = await prisma.category.delete({
+      where: {
+        id,
+      },
+    });
+
+    return NextResponse.json(deletedCategory, { status: 200 });
+  } catch (error) {
+    console.error("Error deleting cateory:", error);
+    return NextResponse.json(
+      { error: "Failed to delete the category" },
+      { status: 500 }
+    );
+  }
+}
